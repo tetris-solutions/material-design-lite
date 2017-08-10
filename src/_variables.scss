@@ -64,8 +64,8 @@
    We should be able to improve on this once CSS Font Loading L3 becomes more
    widely available.
 */
-$preferred_font: 'Roboto', 'Helvetica', 'Arial', sans-serif !default;
-$performance_font: 'Helvetica', 'Arial', sans-serif !default;
+$preferred_font: 'Roboto Slab', 'Helvetica', 'Arial', sans-serif !default;
+$performance_font: 'Open Sans', 'Helvetica', 'Arial', sans-serif !default;
 
 /* ==========  COLORS  ========== */
 
@@ -589,4 +589,4 @@ $tooltip-font-size-large: 14px !default;
 $chip-bg-color: rgb(222, 222, 222) !default;
 $chip-bg-active-color: rgb(214, 214, 214) !default;
 $chip-height: 32px !default;
-$chip-font-size: 13px !default; 
+$chip-font-size: 13px !default;

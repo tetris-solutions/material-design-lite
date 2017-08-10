@@ -30,6 +30,7 @@ import vinylPaths from 'vinyl-paths';
 import runSequence from 'run-sequence';
 import browserSync from 'browser-sync';
 import through from 'through2';
+import util from 'gulp-util';
 import swig from 'swig';
 import gulp from 'gulp';
 import closureCompiler from 'gulp-closure-compiler';
@@ -773,7 +774,7 @@ gulp.task('templates', [
   'templates:styles'
 ]);
 
-gulp.task('styles:gen', ['styles'], () => {
+gulp.task('styles:gen', util.env.skip ? [] : ['styles'], () => {
   const MaterialCustomizer = require('./docs/_assets/customizer.js');
   const templatePath = path.join(__dirname, 'dist', 'material.min.css.template');
   // TODO: This task needs refactoring once we turn MaterialCustomizer
@@ -783,25 +784,42 @@ gulp.task('styles:gen', ['styles'], () => {
 
   let stream = gulp.src('');
 
-  mc.paletteIndices.forEach(primary => {
-    mc.paletteIndices.forEach(accent => {
-      if (primary === accent) {
-        return;
-      }
+  function gen(...args) {
+    args = args.filter(Boolean).map(String)
 
-      if (mc.forbiddenAccents.indexOf(accent) !== -1) {
-        return;
-      }
+    const [primary, accent] = args;
 
-      const primaryName = primary.toLowerCase().replace(' ', '_');
-      const accentName = accent.toLowerCase().replace(' ', '_');
+    if (primary === accent) {
+      return;
+    }
 
-      stream = stream.pipe($.file(
-        `material.${primaryName}-${accentName}.min.css`,
-        mc.processTemplate(primary, accent)
-      ));
-    });
-  });
+    if (mc.forbiddenAccents.indexOf(accent) !== -1) {
+      return;
+    }
 
-  stream.pipe(gulp.dest('dist'));
+    const fsFriendly = str => str.toLowerCase().replace(' ', '_');
+
+    try {
+      const template = mc.processTemplate(...args);
+
+      stream = stream
+        .pipe($.file(
+          `material.${args.map(fsFriendly).join('-')}.min.css`,
+          template
+        ));
+    } catch (e) {
+      // skip
+      console.log('SKIP', args, e);
+    }
+  }
+
+  gen(
+    util.env.primary || 'Grey',
+    util.env.accent || 'Blue',
+    util.env['normal-shade'],
+    util.env['darker-shade'],
+    util.env['accent-shade']
+  );
+
+  stream.pipe(gulp.dest('dist/css'));
 });

@@ -453,10 +453,10 @@ MaterialCustomizer = (function() {
     return r[this.lightnessIndices.indexOf(lightness)];
   };
 
-  MaterialCustomizer.prototype.processTemplate = function(primaryColor, secondaryColor) {
-    var primary = this.getColor(primaryColor, '500');
-    var primaryDark = this.getColor(primaryColor, '700');
-    var accent = this.getColor(secondaryColor, 'A200');
+  MaterialCustomizer.prototype.processTemplate = function(primaryColor, secondaryColor, normalShade, darkerShade, accentShade) {
+    var primary = this.getColor(primaryColor, normalShade || '500');
+    var primaryDark = this.getColor(primaryColor, darkerShade || '700');
+    var accent = this.getColor(secondaryColor, accentShade || 'A200');
 
     return this.replaceDict(this.template, {
       '\\$color-primary-dark': primaryDark,

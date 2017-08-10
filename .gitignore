@@ -6,3 +6,5 @@ docs/out
 .publish
 /dist
 .drone.sec.yml
+.idea
+package-lock.json
